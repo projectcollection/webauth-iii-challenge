@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken')
 const Users = require('../data/dbHelpers');
 const secret = require('../secrets').jwtSecret;
 
+const middlewares = require('../middlewares')
+
 router.post('/register', async (req, res) => {
     const {username, password, } = req.body;
 
@@ -33,10 +35,15 @@ router.post('/login', async (req, res) => {
                 token
             });
         }else{
-            res.status(500).json('server error')
+            res.status(500).json('server error');
         }
     }
 });
+
+router.get('/users', middlewares.isLoggedIn, async (req, res) => {
+    const users = await Users.getUsers();
+    res.status(200).json(users)
+})
 
 const generateToken = (user) => {
     const payload = {

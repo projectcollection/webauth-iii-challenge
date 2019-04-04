@@ -1,27 +1,29 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 
+import MainApp from './components/MainApp'
+import Auth from './components/Auth'
+
+import axios from 'axios';
+
+axios.defaults.baseURL = 'http://localhost:5000/api/'
+
 class App extends Component {
+  state = {
+    isAuthed: localStorage.getItem('token') ? true : false 
+  }
   render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
+    if(this.state.isAuthed){
+      return <MainApp updateAuth = {this.updateAuth}/> 
+    }else{
+      return <Auth updateAuth = {this.updateAuth}/>
+    }
+  }
+
+  updateAuth = (authed) => {
+    this.setState({
+      isAuthed: authed
+    })
   }
 }
 
